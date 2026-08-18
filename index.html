@@ -3,50 +3,269 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Event Attendance System</title>
+    <title>CMC Event Attendance</title>
+    <!-- Modern Font mimicking the website's clean typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
     <!-- Libraries for QR Generation and Scanning -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://unpkg.com/html5-qrcode"></script>
     <style>
-        body { font-family: Arial, sans-serif; padding: 20px; background: #f4f4f9; }
-        .container { display: flex; gap: 20px; flex-wrap: wrap; }
-        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); flex: 1; min-width: 300px; }
-        h2 { color: #333; margin-top: 0; }
-        input, button { padding: 10px; margin: 5px 0; width: 100%; box-sizing: border-box; }
-        button { background: #0056b3; color: white; border: none; cursor: pointer; border-radius: 5px; font-weight: bold; }
-        button:hover { background: #004494; }
-        .btn-export { background: #28a745; margin-top: 15px; } /* Green button */
-        .btn-export:hover { background: #218838; }
-        #qrcode { margin-top: 15px; display: flex; justify-content: center; }
-        .log-item { background: #e2f0d9; padding: 10px; margin-bottom: 5px; border-radius: 4px; border-left: 4px solid #548235; }
+        :root {
+            --cmc-navy: #1f2036;       /* Matched from logo background */
+            --cmc-yellow: #fbb034;     /* Matched from header background */
+            --cmc-bg: #4a4d5e;         /* Matched from main website background */
+            --surface: #ffffff;
+            --text-main: #2d3748;
+            --text-muted: #718096;
+            --border: #e2e8f0;
+        }
+
+        body { 
+            font-family: 'Montserrat', sans-serif; 
+            background: var(--cmc-bg); 
+            color: var(--text-main);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* --- CMC Custom Header --- */
+        .cmc-header {
+            width: 100%;
+            height: 90px;
+            display: flex;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            margin-bottom: 2rem;
+        }
+
+        .header-left {
+            background-color: var(--cmc-navy);
+            width: 30%;
+            min-width: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            padding: 1rem;
+            box-sizing: border-box;
+        }
+
+        .header-left .logo-text {
+            font-size: 2.2rem;
+            font-weight: 800;
+            line-height: 1;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+        
+        .header-left .sub-text {
+            font-size: 0.65rem;
+            font-weight: 400;
+            display: block;
+            margin-top: 4px;
+            letter-spacing: 0.5px;
+        }
+
+        .header-right {
+            background-color: var(--cmc-yellow);
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            padding-left: 2rem;
+            color: white;
+            font-weight: 700;
+            font-size: 1.5rem;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        /* --- Main Layout --- */
+        .container { 
+            display: flex; 
+            gap: 1.5rem; 
+            flex-wrap: wrap; 
+            max-width: 1100px;
+            width: 95%;
+            justify-content: center;
+            padding-bottom: 2rem;
+        }
+
+        .card { 
+            background: var(--surface); 
+            padding: 2rem; 
+            border-radius: 8px; 
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3); 
+            flex: 1; 
+            min-width: 320px; 
+            border-top: 5px solid var(--cmc-yellow);
+        }
+
+        h2 { 
+            color: var(--cmc-navy);
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-top: 0; 
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+        }
+
+        p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+
+        input { 
+            padding: 0.85rem 1rem; 
+            margin-bottom: 1rem; 
+            width: 100%; 
+            box-sizing: border-box; 
+            border: 2px solid var(--border);
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: border-color 0.2s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--cmc-navy);
+        }
+
+        /* --- Buttons --- */
+        button { 
+            padding: 0.85rem 1.5rem; 
+            width: 100%; 
+            background: var(--cmc-navy); 
+            color: white; 
+            border: none; 
+            cursor: pointer; 
+            border-radius: 4px; 
+            font-weight: 700; 
+            font-size: 1rem;
+            font-family: inherit;
+            text-transform: uppercase;
+            transition: all 0.2s ease;
+        }
+
+        button:hover { 
+            background: var(--cmc-yellow); 
+            color: var(--cmc-navy);
+        }
+
+        .btn-export { 
+            background: var(--cmc-yellow);
+            color: var(--cmc-navy);
+            margin-top: 1.5rem; 
+        }
+
+        .btn-export:hover { 
+            background: #e59d2a; 
+        }
+
+        /* --- QR and Log Elements --- */
+        #qrcode { 
+            margin-top: 1.5rem; 
+            display: flex; 
+            justify-content: center; 
+        }
+
+        #reader {
+            border-radius: 4px;
+            overflow: hidden;
+            border: 2px solid var(--border) !important;
+        }
+
+        h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--cmc-navy);
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 0.5rem;
+        }
+
+        #attendance-log {
+            max-height: 250px;
+            overflow-y: auto;
+        }
+
+        .log-item { 
+            background: #f8f9fa; 
+            padding: 1rem; 
+            margin-bottom: 0.5rem; 
+            border-radius: 4px; 
+            border-left: 5px solid var(--cmc-yellow); 
+            font-size: 0.95rem;
+        }
+
+        .log-item strong {
+            color: var(--cmc-navy);
+            display: block;
+            font-size: 1.05rem;
+        }
+        
+        /* Checkmark Animation Overlay */
+        #scan-success-overlay {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(40, 167, 69, 0.9);
+            color: white;
+            padding: 20px 40px;
+            border-radius: 8px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            z-index: 10;
+        }
     </style>
 </head>
 <body>
 
-    <h1>📅 Event Attendance System</h1>
+    <!-- CMC Styled Header -->
+    <header class="cmc-header">
+        <div class="header-left">
+            <div class="logo-text">
+                CMC
+                <span class="sub-text">Central Mindanao Colleges</span>
+            </div>
+        </div>
+        <div class="header-right">
+            ATTENDANCE SYSTEM
+        </div>
+    </header>
     
     <div class="container">
         <!-- STUDENT VIEW -->
         <div class="card">
-            <h2>📱 Student: Setup Account</h2>
-            <p>Enter your Student ID to generate your Event Pass.</p>
-            <input type="text" id="studentId" placeholder="e.g., 2023-00123">
+            <h2>Student Portal</h2>
+            <p>Generate your digital event pass</p>
+            <input type="text" id="studentId" placeholder="Student ID Number">
             <input type="text" id="studentName" placeholder="Full Name">
             <button onclick="generateQR()">Generate QR Code</button>
             <div id="qrcode"></div>
         </div>
 
         <!-- ADMIN VIEW -->
-        <div class="card">
-            <h2>📷 Admin: Event Scanner</h2>
-            <p>Scan student QR codes to log attendance.</p>
+        <div class="card" style="position: relative;">
+            <h2>Event Scanner</h2>
+            <p>Scan student passes to log entry</p>
+            
+            <div id="scan-success-overlay">✅ Scanned!</div>
             <div id="reader" style="width: 100%;"></div>
             
-            <h3 style="margin-top: 20px;">Attendance Log:</h3>
+            <h3>Attendance Log</h3>
             <div id="attendance-log"></div>
             
-            <!-- EXPORT BUTTON -->
-            <button class="btn-export" onclick="exportToCSV()">📥 Download Attendance (CSV)</button>
+            <button class="btn-export" onclick="exportToCSV()">
+                Download Attendance Report (CSV)
+            </button>
         </div>
     </div>
 
@@ -66,14 +285,22 @@
             
             new QRCode(document.getElementById("qrcode"), {
                 text: studentData,
-                width: 200,
-                height: 200
+                width: 220,
+                height: 220,
+                colorDark : "#1f2036", // Uses CMC Navy
+                colorLight : "#ffffff"
             });
         }
 
         // --- 2. QR Code Scanner & Data Tracking ---
         let scannedIDs = new Set();
-        let attendanceList = []; // Array to store data for the CSV
+        let attendanceList = []; 
+
+        function showSuccessOverlay() {
+            let overlay = document.getElementById("scan-success-overlay");
+            overlay.style.display = "block";
+            setTimeout(() => { overlay.style.display = "none"; }, 1500);
+        }
 
         function onScanSuccess(decodedText, decodedResult) {
             try {
@@ -83,20 +310,18 @@
                     scannedIDs.add(student.id);
                     
                     let time = new Date().toLocaleTimeString();
-                    
-                    // Save to our list for downloading later
                     attendanceList.push({ id: student.id, name: student.name, time: time });
                     
-                    // Update the visual log on the screen
                     let logDiv = document.getElementById("attendance-log");
                     let entry = document.createElement("div");
                     entry.className = "log-item";
-                    entry.innerHTML = `<strong>✅ ${student.name}</strong> (${student.id}) <br><small>Checked in at ${time}</small>`;
+                    entry.innerHTML = `<strong>${student.name}</strong> ID: ${student.id} <br><small style="color: #718096;">Checked in at ${time}</small>`;
                     
                     logDiv.insertBefore(entry, logDiv.firstChild);
+                    showSuccessOverlay(); // Trigger the green pop-up
                 }
             } catch (e) {
-                console.log("Invalid QR Code");
+                console.log("Invalid format");
             }
         }
 
@@ -107,25 +332,20 @@
         // --- 3. CSV Export Function ---
         function exportToCSV() {
             if (attendanceList.length === 0) {
-                alert("No attendance records to download yet! Please scan some QR codes first.");
+                alert("No records to download yet.");
                 return;
             }
 
-            // Create the headers for the spreadsheet
             let csvContent = "Student ID,Full Name,Time Checked In\n";
-            
-            // Loop through the data and add each row
             attendanceList.forEach(function(record) {
-                // Wrap in quotes to prevent errors if a name has a comma
                 csvContent += `"${record.id}","${record.name}","${record.time}"\n`;
             });
 
-            // Trigger the download
             let blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
             let url = URL.createObjectURL(blob);
             let link = document.createElement("a");
             link.setAttribute("href", url);
-            link.setAttribute("download", "Event_Attendance.csv");
+            link.setAttribute("download", "CMC_Event_Attendance.csv");
             link.style.visibility = 'hidden';
             document.body.appendChild(link);
             link.click();
