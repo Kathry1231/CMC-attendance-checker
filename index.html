@@ -4,16 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CMC Event Attendance</title>
-    <!-- Modern Font mimicking the website's clean typography -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <!-- Libraries for QR Generation and Scanning -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://unpkg.com/html5-qrcode"></script>
     <style>
         :root {
-            --cmc-navy: #1f2036;       /* Matched from logo background */
-            --cmc-yellow: #fbb034;     /* Matched from header background */
-            --cmc-bg: #4a4d5e;         /* Matched from main website background */
+            --cmc-navy: #1f2036;       
+            --cmc-yellow: #fbb034;     
+            --cmc-bg: #4a4d5e;         
             --surface: #ffffff;
             --text-main: #2d3748;
             --text-muted: #718096;
@@ -43,29 +41,19 @@
         .header-left {
             background-color: var(--cmc-navy);
             width: 30%;
-            min-width: 250px;
+            min-width: 280px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
-            padding: 1rem;
+            padding: 0.5rem;
             box-sizing: border-box;
         }
 
-        .header-left .logo-text {
-            font-size: 2.2rem;
-            font-weight: 800;
-            line-height: 1;
-            text-align: center;
-            letter-spacing: 1px;
-        }
-        
-        .header-left .sub-text {
-            font-size: 0.65rem;
-            font-weight: 400;
-            display: block;
-            margin-top: 4px;
-            letter-spacing: 0.5px;
+        /* Styling for the new uploaded logo */
+        .header-left img {
+            max-height: 75px; 
+            width: auto;
+            object-fit: contain;
         }
 
         .header-right {
@@ -209,7 +197,6 @@
             font-size: 1.05rem;
         }
         
-        /* Checkmark Animation Overlay */
         #scan-success-overlay {
             display: none;
             position: absolute;
@@ -228,13 +215,11 @@
 </head>
 <body>
 
-    <!-- CMC Styled Header -->
+    <!-- CMC Styled Header (Updated with Logo Image) -->
     <header class="cmc-header">
         <div class="header-left">
-            <div class="logo-text">
-                CMC
-                <span class="sub-text">Central Mindanao Colleges</span>
-            </div>
+            <!-- This image tag points to the file you upload to GitHub -->
+            <img src="image_766582.png" alt="Central Mindanao Colleges Logo">
         </div>
         <div class="header-right">
             ATTENDANCE SYSTEM
@@ -287,7 +272,7 @@
                 text: studentData,
                 width: 220,
                 height: 220,
-                colorDark : "#1f2036", // Uses CMC Navy
+                colorDark : "#1f2036",
                 colorLight : "#ffffff"
             });
         }
@@ -318,7 +303,7 @@
                     entry.innerHTML = `<strong>${student.name}</strong> ID: ${student.id} <br><small style="color: #718096;">Checked in at ${time}</small>`;
                     
                     logDiv.insertBefore(entry, logDiv.firstChild);
-                    showSuccessOverlay(); // Trigger the green pop-up
+                    showSuccessOverlay();
                 }
             } catch (e) {
                 console.log("Invalid format");
