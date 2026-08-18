@@ -1,0 +1,106 @@
+HTML
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Attendance System</title>
+    <!-- Libraries for QR Generation and Scanning -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f4f4f9; }
+        .container { display: flex; gap: 20px; flex-wrap: wrap; }
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); flex: 1; min-width: 300px; }
+        h2 { color: #333; margin-top: 0; }
+        input, button { padding: 10px; margin: 5px 0; width: 100%; box-sizing: border-box; }
+        button { background: #0056b3; color: white; border: none; cursor: pointer; border-radius: 5px; }
+        button:hover { background: #004494; }
+        #qrcode { margin-top: 15px; display: flex; justify-content: center; }
+        .log-item { background: #e2f0d9; padding: 10px; margin-bottom: 5px; border-radius: 4px; border-left: 4px solid #548235; }
+    </style>
+</head>
+<body>
+
+    <h1>📅 Event Attendance System</h1>
+    
+    <div class="container">
+        <!-- STUDENT VIEW -->
+        <div class="card">
+            <h2>📱 Student: Setup Account</h2>
+            <p>Enter your Student ID to generate your Event Pass.</p>
+            <input type="text" id="studentId" placeholder="e.g., 2023-00123">
+            <input type="text" id="studentName" placeholder="Full Name">
+            <button onclick="generateQR()">Generate QR Code</button>
+            <div id="qrcode"></div>
+        </div>
+
+        <!-- ADMIN VIEW -->
+        <div class="card">
+            <h2>📷 Admin: Event Scanner</h2>
+            <p>Scan student QR codes to log attendance.</p>
+            <div id="reader" style="width: 100%;"></div>
+            
+            <h3 style="margin-top: 20px;">Attendance Log:</h3>
+            <div id="attendance-log"></div>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. QR Code Generator ---
+        function generateQR() {
+            let id = document.getElementById("studentId").value;
+            let name = document.getElementById("studentName").value;
+            
+            if(!id || !name) {
+                alert("Please enter ID and Name!");
+                return;
+            }
+
+            // Create a JSON string with student data
+            let studentData = JSON.stringify({ id: id, name: name });
+
+            // Clear old QR code
+            document.getElementById("qrcode").innerHTML = "";
+            
+            // Generate new QR code
+            new QRCode(document.getElementById("qrcode"), {
+                text: studentData,
+                width: 200,
+                height: 200
+            });
+        }
+
+        // --- 2. QR Code Scanner ---
+        let scannedIDs = new Set(); // Prevent double scanning
+
+        function onScanSuccess(decodedText, decodedResult) {
+            try {
+                let student = JSON.parse(decodedText);
+                
+                // Check if already scanned
+                if(!scannedIDs.has(student.id)) {
+                    scannedIDs.add(student.id);
+                    
+                    let logDiv = document.getElementById("attendance-log");
+                    let time = new Date().toLocaleTimeString();
+                    
+                    let entry = document.createElement("div");
+                    entry.className = "log-item";
+                    entry.innerHTML = `<strong>✅ ${student.name}</strong> (${student.id}) <br><small>Checked in at ${time}</small>`;
+                    
+                    // Add to top of list
+                    logDiv.insertBefore(entry, logDiv.firstChild);
+                }
+            } catch (e) {
+                console.log("Invalid QR Code");
+            }
+        }
+
+        // Initialize Scanner
+        let html5QrcodeScanner = new Html5QrcodeScanner(
+            "reader", { fps: 10, qrbox: {width: 250, height: 250} }, false);
+        html5QrcodeScanner.render(onScanSuccess);
+    </script>
+</body>
+</html>
